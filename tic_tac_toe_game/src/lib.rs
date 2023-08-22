@@ -48,7 +48,45 @@ impl Game{
 
 //checking functions
 fn vertical(game: &mut Game, symbol: &str){
-    
+    //first line
+    //layout:
+    //X X X
+    //_ _ _ 
+    //_ _ _
+    if game.field[0][0] == symbol && game.field[0][1] == symbol && game.field[0][2] == symbol{
+        if symbol == "X"{
+            game.field[0][0] = "❌".to_string();
+            game.field[0][1] = "❌".to_string();
+            game.field[0][2] = "❌".to_string();
+        }else{
+            game.field[0][0] = "⭕".to_string();
+            game.field[0][1] = "⭕".to_string();
+            game.field[0][2] = "⭕".to_string();
+        }
+    }
+
+    //second line 
+    //layout:
+    //_ _ _
+    //X X X
+    //_ _ _
+    if game.field[1][0] == symbol && game.field[1][1] == symbol && game.field[1][2] == symbol{
+        if symbol == "X"{
+            game.field[1][0] = "❌".to_string();
+            game.field[1][1] = "❌".to_string();
+            game.field[1][2] = "❌".to_string();
+        }else{
+            game.field[1][0] = "⭕".to_string();
+            game.field[1][1] = "⭕".to_string();
+            game.field[1][2] = "⭕".to_string();
+        }
+    }
+
+    //third line
+    //layout:
+    //_ _ _
+    //_ _ _
+    //X X X 
 }
 
 impl App for Game{
@@ -72,13 +110,90 @@ impl App for Game{
                 return;
             }
 
-            ui.horizontal(|ui| {
-                
+            //first row of the game fields
+            ui.horizontal_centered(|ui| {
+                //button 1
                 if ui.button(&self.field[0][0]).clicked(){
-                    
+                    if &self.round % 2 == 0 {
+                        self.field[0][0] = "O".to_string();
+                    }else{
+                        self.field[0][0] = "X".to_string();
+                    }
                 }
-
+                //button 2
+                if ui.button(&self.field[0][1]).clicked(){
+                    if &self.round % 2 == 0 {
+                        self.field[0][1] = "O".to_string();
+                    }else{
+                        self.field[0][1] = "X".to_string();
+                    }
+                }
+                //button 3
+                if ui.button(&self.field[0][2]).clicked(){
+                    if &self.round % 2 == 0{
+                        self.field[0][2] = "O".to_string();
+                    }else{
+                        self.field[0][2] = "X".to_string();
+                    }
+                }
             });
+
+            //row 2 
+            ui.horizontal_centered(|ui|{
+                //button 1
+                if ui.button(&self.field[0][0]).clicked(){
+                    if &self.round % 2 == 0 {
+                        self.field[0][0] = "O".to_string();
+                    }else{
+                        self.field[0][0] = "X".to_string();
+                    }
+                }
+                //button 2
+                if ui.button(&self.field[0][1]).clicked(){
+                    if &self.round % 2 == 0 {
+                        self.field[0][1] = "O".to_string();
+                    }else{
+                        self.field[0][1] = "X".to_string();
+                    }
+                }
+                //button 3
+                if ui.button(&self.field[0][2]).clicked(){
+                    if &self.round % 2 == 0{
+                        self.field[0][2] = "O".to_string();
+                    }else{
+                        self.field[0][2] = "X".to_string();
+                    }
+                }
+            });
+
+            //row 3 
+            ui.horizontal_centered(|ui|{
+                //button 1
+                if ui.button(&self.field[0][0]).clicked(){
+                    if &self.round % 2 == 0 {
+                        self.field[0][0] = "O".to_string();
+                    }else{
+                        self.field[0][0] = "X".to_string();
+                    }
+                }
+                //button 2
+                if ui.button(&self.field[0][1]).clicked(){
+                    if &self.round % 2 == 0 {
+                        self.field[0][1] = "O".to_string();
+                    }else{
+                        self.field[0][1] = "X".to_string();
+                    }
+                }
+                //button 3
+                if ui.button(&self.field[0][2]).clicked(){
+                    if &self.round % 2 == 0{
+                        self.field[0][2] = "O".to_string();
+                    }else{
+                        self.field[0][2] = "X".to_string();
+                    }
+                }
+            });
+
         });
     }
 }
