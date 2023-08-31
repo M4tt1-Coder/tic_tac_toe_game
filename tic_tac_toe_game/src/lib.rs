@@ -1,5 +1,5 @@
 //using statements
-use eframe::{egui::{self, CentralPanel, TopBottomPanel, Ui}, App};
+use eframe::{egui::{self, CentralPanel, TopBottomPanel, Ui, Context, FontDefinitions, FontData}, App, epaint::FontFamily};
 
 //constants
 const SYMBOLIDS: [&'static str; 2] = ["O", "X"];
@@ -13,6 +13,7 @@ pub struct Game{
 
 //TODO - finish checker
 //TODO - add buttons with styling
+//TODO - add condition if field is full can't be used anymore
 
 impl Game{
     //for settig the default values
@@ -51,10 +52,29 @@ impl Game{
         all_fields_full(self);
     }
 
+    //set the font size to see the buttons better
+    fn set_font_size(&self, ctx: &Context){
+        let mut font_def = FontDefinitions::default();
+        
+        //add arial font
+        font_def.font_data.insert(
+            "Arial".to_string(),
+            FontData::from_static(include_bytes!("../fonts/ArialTh.ttf")),
+        );
+
+        font_def.families.get_mut(&FontFamily::Proportional).unwrap().insert(0, "Arial".to_string());
+
+        ctx.set_fonts(font_def);
+    }
+
     fn render_first_line(&mut self, ui: &mut Ui){
         ui.horizontal(|ui| {
-                //button 1
-            if ui.button(&self.field[0][0]).clicked(){
+            // let _button = ui.add_sized((60., 60.), egui::Button::new("Test"));
+            // if _button.clicked() {
+
+            // }
+            //button 1
+            if ui.add_sized((60., 60.), egui::Button::new(&self.field[0][0])).clicked(){
                 if &self.round % 2 == 0 {
                     self.field[0][0] = "O".to_string();
                 }else{
@@ -64,7 +84,7 @@ impl Game{
                 self.check();
             }
             //button 2
-            if ui.button(&self.field[0][1]).clicked(){
+            if ui.add_sized((60., 60.), egui::Button::new(&self.field[0][1])).clicked(){
                 if &self.round % 2 == 0 {
                     self.field[0][1] = "O".to_string();
                 }else{
@@ -74,7 +94,7 @@ impl Game{
                 self.check();
             }
             //button 3
-            if ui.button(&self.field[0][2]).clicked(){
+            if ui.add_sized((60., 60.), egui::Button::new(&self.field[0][2])).clicked(){
                 if &self.round % 2 == 0{
                     self.field[0][2] = "O".to_string();
                 }else{
@@ -89,7 +109,7 @@ impl Game{
     fn render_second_line(&mut self, ui: &mut Ui){
         ui.horizontal(|ui|{
                 //button 1
-            if ui.button(&self.field[1][0]).clicked(){
+            if ui.add_sized((60., 60.), egui::Button::new(&self.field[1][0])).clicked(){
                 if &self.round % 2 == 0 {
                     self.field[1][0] = "O".to_string();
                 }else{
@@ -99,7 +119,7 @@ impl Game{
                 self.check();
             }
             //button 2
-            if ui.button(&self.field[1][1]).clicked(){
+            if ui.add_sized((60., 60.), egui::Button::new(&self.field[1][1])).clicked(){
                 if &self.round % 2 == 0 {
                     self.field[1][1] = "O".to_string();
                 }else{
@@ -109,7 +129,7 @@ impl Game{
                 self.check();
             }
             //button 3
-            if ui.button(&self.field[1][2]).clicked(){
+            if ui.add_sized((60., 60.), egui::Button::new(&self.field[1][2])).clicked(){
                 if &self.round % 2 == 0{
                     self.field[1][2] = "O".to_string();
                 }else{
@@ -124,7 +144,7 @@ impl Game{
     fn render_third_line(&mut self, ui: &mut Ui){
         ui.horizontal(|ui|{
                 //button 1
-            if ui.button(&self.field[2][0]).clicked(){
+            if ui.add_sized((60., 60.), egui::Button::new(&self.field[2][0])).clicked(){
                 if &self.round % 2 == 0 {
                     self.field[2][0] = "O".to_string();
                 }else{
@@ -134,7 +154,7 @@ impl Game{
                 self.check();
             }
             //button 2
-            if ui.button(&self.field[2][1]).clicked(){
+            if ui.add_sized((60., 60.), egui::Button::new(&self.field[2][1])).clicked(){
                 if &self.round % 2 == 0 {
                     self.field[2][1] = "O".to_string();
                 }else{
@@ -144,7 +164,7 @@ impl Game{
                 self.check();
             }
             //button 3
-            if ui.button(&self.field[2][2]).clicked(){
+            if ui.add_sized((60., 60.), egui::Button::new(&self.field[2][2])).clicked(){
                 if &self.round % 2 == 0{
                     self.field[2][2] = "O".to_string();
                 }else{
@@ -325,9 +345,13 @@ impl App for Game{
         true
     }
 
+    
+
     fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {}
 
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        self.set_font_size(ctx);
+        
         //header part
         TopBottomPanel::top("top").show(ctx, |ui| {
             ui.label("TikTakToe");
@@ -361,6 +385,37 @@ impl App for Game{
 
         });
     }
+
+    fn auto_save_interval(&self) -> std::time::Duration {
+        std::time::Duration::from_secs(30)
+    }
+
+    fn max_size_points(&self) -> egui::Vec2 {
+        egui::Vec2::INFINITY
+    }
+
+    fn clear_color(&self, _visuals: &egui::Visuals) -> [f32; 4] {
+        // NOTE: a bright gray makes the shadows of the windows look weird.
+        // We use a bit of transparency so that if the user switches on the
+        // `transparent()` option they get immediate results.
+        egui::Color32::from_rgba_unmultiplied(12, 12, 12, 180).to_normalized_gamma_f32()
+
+        // _visuals.window_fill() would also be a natural choice
+    }
+
+    fn persist_native_window(&self) -> bool {
+        true
+    }
+
+    fn persist_egui_memory(&self) -> bool {
+        true
+    }
+
+    fn warm_up_enabled(&self) -> bool {
+        false
+    }
+
+    fn post_rendering(&mut self, _window_size_px: [u32; 2], _frame: &eframe::Frame) {}
 
 
 }

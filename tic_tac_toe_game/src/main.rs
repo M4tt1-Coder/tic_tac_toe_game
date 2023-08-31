@@ -8,7 +8,7 @@ fn main() -> Result<(), Error>{
     let app_name = "TikTakToe";
     //set options
     let native_options = eframe::NativeOptions {
-        initial_window_size: Some(egui::vec2(720.0, 720.0)),
+        initial_window_size: Some(egui::vec2(220.0, 230.0)),
       ..eframe::NativeOptions::default()
     };
     //start the game
