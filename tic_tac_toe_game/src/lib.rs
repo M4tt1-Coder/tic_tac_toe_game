@@ -11,10 +11,7 @@ pub struct Game{
     field: Vec<Vec<String>>,
 }
 
-//TODO - finish checker
-//TODO - add buttons with styling
-//TODO - add condition if field is full can't be used anymore
-
+//TODO - add pop up message that asks for new game
 impl Game{
     //for settig the default values
     pub fn new() -> Game{
@@ -42,6 +39,29 @@ impl Game{
             ]]
         }
     }
+
+    fn restart(&mut self){
+        *self = Game::new();
+    }
+
+    //ask for a new game
+    fn play_again(&mut self, ui: &mut Ui) {
+        let answer = ui.add_sized((40., 25.), egui::Button::new("Play Again"));
+        let popup_id = ui.make_persistent_id("popup");
+        if answer.clicked(){
+            ui.memory_mut(|mem| mem.toggle_popup(popup_id));
+        }
+        let above = egui::AboveOrBelow::Above;
+        //thats the popup for a new game
+        egui::popup::popup_above_or_below_widget(ui, popup_id, &answer, above, |ui| {
+            ui.add_sized((100., 70.), egui::Label::new("Do you want to play again?"));
+            ui.add_space(15.);
+            if ui.add_sized((50., 30.), egui::Button::new("Yes")).clicked(){
+                self.restart();
+            }
+        });
+    }
+
     //check if the game is finished
     fn check(&mut self){
         for s in SYMBOLIDS{
@@ -75,33 +95,40 @@ impl Game{
             // }
             //button 1
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[0][0])).clicked(){
-                if &self.round % 2 == 0 {
-                    self.field[0][0] = "O".to_string();
-                }else{
-                    self.field[0][0] = "X".to_string();
+                if self.field[0][0] == " ".to_string(){
+                    if &self.round % 2 == 1 {
+                        self.field[0][0] = "O".to_string();
+                    }else{
+                        self.field[0][0] = "X".to_string();
+                    }
+                    self.round += 1;
+                    self.check();
                 }
-                self.round += 1;
-                self.check();
             }
             //button 2
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[0][1])).clicked(){
-                if &self.round % 2 == 0 {
-                    self.field[0][1] = "O".to_string();
-                }else{
-                    self.field[0][1] = "X".to_string();
+                if self.field[0][1] == " ".to_string(){
+                    if &self.round % 2 == 1 {
+                        self.field[0][1] = "O".to_string();
+                    }else{
+                        self.field[0][1] = "X".to_string();
+                    }
+                    self.round += 1;
+                    self.check();
                 }
-                self.round += 1;
-                self.check();
             }
             //button 3
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[0][2])).clicked(){
-                if &self.round % 2 == 0{
-                    self.field[0][2] = "O".to_string();
-                }else{
-                    self.field[0][2] = "X".to_string();
+                if self.field[0][2] == " ".to_string(){
+                        
+                    if &self.round % 2 == 1{
+                        self.field[0][2] = "O".to_string();
+                    }else{
+                        self.field[0][2] = "X".to_string();
+                    }
+                    self.round += 1;
+                    self.check();   
                 }
-                self.round += 1;
-                self.check();
             }
         }); 
     }
@@ -110,33 +137,39 @@ impl Game{
         ui.horizontal(|ui|{
                 //button 1
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[1][0])).clicked(){
-                if &self.round % 2 == 0 {
-                    self.field[1][0] = "O".to_string();
-                }else{
-                    self.field[1][0] = "X".to_string();
+                if self.field[1][0] == " ".to_string(){
+                    if &self.round % 2 == 1 {
+                        self.field[1][0] = "O".to_string();
+                    }else{
+                        self.field[1][0] = "X".to_string();
+                    }
+                    self.round += 1;
+                    self.check();
                 }
-                self.round += 1;
-                self.check();
             }
             //button 2
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[1][1])).clicked(){
-                if &self.round % 2 == 0 {
-                    self.field[1][1] = "O".to_string();
-                }else{
-                    self.field[1][1] = "X".to_string();
-                }
-                self.round += 1;
-                self.check();
+                if self.field[1][1] == " ".to_string(){
+                    if &self.round % 2 == 1 {
+                        self.field[1][1] = "O".to_string();
+                    }else{
+                        self.field[1][1] = "X".to_string();
+                    }
+                    self.round += 1;
+                    self.check();
+                } 
             }
             //button 3
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[1][2])).clicked(){
-                if &self.round % 2 == 0{
-                    self.field[1][2] = "O".to_string();
-                }else{
-                    self.field[1][2] = "X".to_string();
+                if self.field[1][2] == " ".to_string(){
+                    if &self.round % 2 == 1 {
+                        self.field[1][2] = "O".to_string();
+                    }else{
+                        self.field[1][2] = "X".to_string();
+                    }
+                    self.round += 1;
+                    self.check();
                 }
-                self.round += 1;
-                self.check();
             }
         });
     }
@@ -145,33 +178,39 @@ impl Game{
         ui.horizontal(|ui|{
                 //button 1
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[2][0])).clicked(){
-                if &self.round % 2 == 0 {
-                    self.field[2][0] = "O".to_string();
-                }else{
-                    self.field[2][0] = "X".to_string();
+                if self.field[2][0] == " ".to_string(){
+                    if &self.round % 2 == 1 {
+                        self.field[2][0] = "O".to_string();
+                    }else{
+                        self.field[2][0] = "X".to_string();
+                    }
+                    self.round += 1;
+                    self.check();
                 }
-                self.round += 1;
-                self.check();
             }
             //button 2
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[2][1])).clicked(){
-                if &self.round % 2 == 0 {
-                    self.field[2][1] = "O".to_string();
-                }else{
-                    self.field[2][1] = "X".to_string();
+                if self.field[2][1] == " ".to_string(){
+                    if &self.round % 2 == 1 {
+                        self.field[2][1] = "O".to_string();
+                    }else{
+                        self.field[2][1] = "X".to_string();
+                    }
+                    self.round += 1;
+                    self.check();
                 }
-                self.round += 1;
-                self.check();
             }
             //button 3
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[2][2])).clicked(){
-                if &self.round % 2 == 0{
-                    self.field[2][2] = "O".to_string();
-                }else{
-                    self.field[2][2] = "X".to_string();
+                if self.field[2][2] == " ".to_string(){
+                    if &self.round % 2 == 1 {
+                        self.field[2][2] = "O".to_string();
+                    }else{
+                        self.field[2][2] = "X".to_string();
+                    }
+                    self.round += 1;
+                    self.check();
                 }
-                self.round += 1;
-                self.check();
             }
         });
     }
@@ -212,6 +251,7 @@ fn diagonal(game: &mut Game, symbol: &str){
             game.field[1][1] = "⭕".to_string();
             game.field[2][2] = "⭕".to_string();
         }
+        game.finished = true;
     }
 
     //second possability
@@ -229,6 +269,7 @@ fn diagonal(game: &mut Game, symbol: &str){
             game.field[1][1] = "⭕".to_string();
             game.field[2][0] = "⭕".to_string();
         }
+        game.finished = true;
     }
 }
 
@@ -248,6 +289,7 @@ fn vertical(game: &mut Game, symbol: &str){
             game.field[1][0] = "⭕".to_string();
             game.field[2][0] = "⭕".to_string();
         }
+        game.finished = true;
     }
 
     //second case
@@ -265,6 +307,7 @@ fn vertical(game: &mut Game, symbol: &str){
             game.field[1][1] = "⭕".to_string();
             game.field[2][1] = "⭕".to_string();
         }
+        game.finished = true;
     }
 
     //third case
@@ -282,6 +325,7 @@ fn vertical(game: &mut Game, symbol: &str){
             game.field[1][2] = "⭕".to_string();
             game.field[2][2] = "⭕".to_string();
         }
+        game.finished = true;
     }
 }
 
@@ -301,6 +345,7 @@ fn horizontal(game: &mut Game, symbol: &str){
             game.field[0][1] = "⭕".to_string();
             game.field[0][2] = "⭕".to_string();
         }
+        game.finished = true;
     }
 
     //second line 
@@ -318,6 +363,7 @@ fn horizontal(game: &mut Game, symbol: &str){
             game.field[1][1] = "⭕".to_string();
             game.field[1][2] = "⭕".to_string();
         }
+        game.finished = true;
     }
 
     //third line
@@ -335,6 +381,7 @@ fn horizontal(game: &mut Game, symbol: &str){
             game.field[2][1] = "⭕".to_string();
             game.field[2][2] = "⭕".to_string();
         }
+        game.finished = true;
     } 
 }
 
@@ -365,9 +412,10 @@ impl App for Game{
             //-> when a plauer already has a symbol in the field in cant be removed
             if self.finished{
                 ui.label("Game over!");
-                return;
+                self.play_again(ui);
+                //return;
             }
-
+            ui.add_space(15.);
             //first row of the game fields
             // ui.horizontal_centered(|ui| {
             self.render_first_line(ui);
