@@ -272,7 +272,7 @@ fn diagonal(game: &mut Game, symbol: &str){
             game.field[2][0] = "⭕".to_string();
         }
         game.finished = true;
-        game.finished = true;
+        game.is_there_awinner = true;
     }
 }
 
