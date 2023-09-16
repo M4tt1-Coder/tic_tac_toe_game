@@ -8,16 +8,17 @@ const SYMBOLIDS: [&'static str; 2] = ["O", "X"];
 pub struct Game{
     round: i8,
     finished: bool,
+    is_there_awinner: bool,
     field: Vec<Vec<String>>,
 }
 
-//TODO - add pop up message that asks for new game
 impl Game{
     //for settig the default values
     pub fn new() -> Game{
         Game{
             round: 0,
             finished: false,
+            is_there_awinner: false,
             //that looks like this:
             //_ _ _ 
             //_ _ _
@@ -46,7 +47,7 @@ impl Game{
 
     //ask for a new game
     fn play_again(&mut self, ui: &mut Ui) {
-        let answer = ui.add_sized((40., 25.), egui::Button::new("Play Again"));
+        let answer = ui.add_sized((45., 35.), egui::Button::new("Play Again"));
         let popup_id = ui.make_persistent_id("popup");
         if answer.clicked(){
             ui.memory_mut(|mem| mem.toggle_popup(popup_id));
@@ -79,7 +80,7 @@ impl Game{
         //add arial font
         font_def.font_data.insert(
             "Arial".to_string(),
-            FontData::from_static(include_bytes!("../fonts/ArialTh.ttf")),
+            FontData::from_static(include_bytes!("../fonts/ARIALBD.TTF")),
         );
 
         font_def.families.get_mut(&FontFamily::Proportional).unwrap().insert(0, "Arial".to_string());
@@ -252,6 +253,7 @@ fn diagonal(game: &mut Game, symbol: &str){
             game.field[2][2] = "⭕".to_string();
         }
         game.finished = true;
+        game.is_there_awinner = true;
     }
 
     //second possability
@@ -269,6 +271,7 @@ fn diagonal(game: &mut Game, symbol: &str){
             game.field[1][1] = "⭕".to_string();
             game.field[2][0] = "⭕".to_string();
         }
+        game.finished = true;
         game.finished = true;
     }
 }
@@ -290,6 +293,7 @@ fn vertical(game: &mut Game, symbol: &str){
             game.field[2][0] = "⭕".to_string();
         }
         game.finished = true;
+        game.is_there_awinner = true;
     }
 
     //second case
@@ -308,6 +312,7 @@ fn vertical(game: &mut Game, symbol: &str){
             game.field[2][1] = "⭕".to_string();
         }
         game.finished = true;
+        game.is_there_awinner = true;
     }
 
     //third case
@@ -326,6 +331,7 @@ fn vertical(game: &mut Game, symbol: &str){
             game.field[2][2] = "⭕".to_string();
         }
         game.finished = true;
+        game.is_there_awinner = true;
     }
 }
 
@@ -346,6 +352,7 @@ fn horizontal(game: &mut Game, symbol: &str){
             game.field[0][2] = "⭕".to_string();
         }
         game.finished = true;
+        game.is_there_awinner = true;
     }
 
     //second line 
@@ -364,6 +371,7 @@ fn horizontal(game: &mut Game, symbol: &str){
             game.field[1][2] = "⭕".to_string();
         }
         game.finished = true;
+        game.is_there_awinner = true;
     }
 
     //third line
@@ -382,6 +390,7 @@ fn horizontal(game: &mut Game, symbol: &str){
             game.field[2][2] = "⭕".to_string();
         }
         game.finished = true;
+        game.is_there_awinner = true;
     } 
 }
 
@@ -412,6 +421,16 @@ impl App for Game{
             //-> when a plauer already has a symbol in the field in cant be removed
             if self.finished{
                 ui.label("Game over!");
+                ui.add_space(15.);
+                
+                if self.is_there_awinner {
+                    if self.round % 2 == 0{
+                        ui.label("Player two won!");
+                    }else{
+                        ui.label("Player one won!");
+                    }
+                }
+                ui.add_space(15.);
                 self.play_again(ui);
                 //return;
             }
