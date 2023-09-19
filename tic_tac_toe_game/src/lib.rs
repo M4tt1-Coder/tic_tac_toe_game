@@ -2,8 +2,12 @@
 use eframe::{egui::{self, CentralPanel, TopBottomPanel, Ui, Context, FontDefinitions, FontData}, App, epaint::FontFamily};
 
 //constants
+///Represents the symbols in a tiik tak toe game
 const SYMBOLIDS: [&'static str; 2] = ["O", "X"];
 //struct app
+
+///Game instance
+///Stores all necessary information for a game
 #[derive(Default)]
 pub struct Game{
     round: i8,
@@ -14,6 +18,7 @@ pub struct Game{
 
 impl Game{
     //for settig the default values
+    ///Sets the default values for a game
     pub fn new() -> Game{
         Game{
             round: 0,
@@ -41,11 +46,17 @@ impl Game{
         }
     }
 
+    ///Called when the user wants to play another game
+    /// 
+    ///Fails when the game is null
     fn restart(&mut self){
         *self = Game::new();
     }
 
     //ask for a new game
+    ///A component that asks for a new game
+    /// 
+    ///toggles popup when player presses button
     fn play_again(&mut self, ui: &mut Ui) {
         let answer = ui.add_sized((45., 35.), egui::Button::new("Play Again"));
         let popup_id = ui.make_persistent_id("popup");
@@ -64,6 +75,9 @@ impl Game{
     }
 
     //check if the game is finished
+    ///Main endpoint for game validation
+    /// 
+    ///Fails when the game is null
     fn check(&mut self){
         for s in SYMBOLIDS{
             diagonal(self, s);
@@ -74,6 +88,9 @@ impl Game{
     }
 
     //set the font size to see the buttons better
+    ///Sets the font of the application
+    /// 
+    ///Panics when the ttf file isn't valid
     fn set_font_size(&self, ctx: &Context){
         let mut font_def = FontDefinitions::default();
         
@@ -88,136 +105,181 @@ impl Game{
         ctx.set_fonts(font_def);
     }
 
+    ///The gaming field is split into three parts
+    /// 
+    /// A component functions
+    /// 
+    /// Thats line one
+    /// 
+    /// Three buttons are rendered where the content of the button: X OR O depends on the round number
     fn render_first_line(&mut self, ui: &mut Ui){
         ui.horizontal(|ui| {
-            // let _button = ui.add_sized((60., 60.), egui::Button::new("Test"));
-            // if _button.clicked() {
 
             // }
             //button 1
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[0][0])).clicked(){
-                if self.field[0][0] == " ".to_string(){
-                    if &self.round % 2 == 1 {
-                        self.field[0][0] = "O".to_string();
-                    }else{
-                        self.field[0][0] = "X".to_string();
+                if !self.finished{
+                    if self.field[0][0] == " ".to_string(){
+                        if &self.round % 2 == 1 {
+                            self.field[0][0] = "O".to_string();
+                        }else{
+                            self.field[0][0] = "X".to_string();
+                        }
+                        self.round += 1;
+                        self.check();
                     }
-                    self.round += 1;
-                    self.check();
                 }
             }
             //button 2
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[0][1])).clicked(){
-                if self.field[0][1] == " ".to_string(){
-                    if &self.round % 2 == 1 {
-                        self.field[0][1] = "O".to_string();
-                    }else{
-                        self.field[0][1] = "X".to_string();
+                if !self.finished{
+                    if self.field[0][1] == " ".to_string(){
+                        if &self.round % 2 == 1 {
+                            self.field[0][1] = "O".to_string();
+                        }else{
+                            self.field[0][1] = "X".to_string();
+                        }
+                        self.round += 1;
+                        self.check();
                     }
-                    self.round += 1;
-                    self.check();
                 }
             }
             //button 3
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[0][2])).clicked(){
-                if self.field[0][2] == " ".to_string(){
+                if !self.finished{
+                    if self.field[0][2] == " ".to_string(){
                         
-                    if &self.round % 2 == 1{
-                        self.field[0][2] = "O".to_string();
-                    }else{
-                        self.field[0][2] = "X".to_string();
+                        if &self.round % 2 == 1{
+                            self.field[0][2] = "O".to_string();
+                        }else{
+                            self.field[0][2] = "X".to_string();
+                        }
+                        self.round += 1;
+                        self.check();   
                     }
-                    self.round += 1;
-                    self.check();   
                 }
             }
         }); 
     }
 
+    ///A component function
+    /// 
+    /// Second line of the gamefield
+    /// 
+    /// A horizontal container widget contains the buttons
+    /// 
+    /// Every button represents one symbol of the game field property
+    /// 
+    /// When the button is clicked, it checks if the game is finished
+    /// if not it looks with a modulo of 2 what round we have currently and asigns it to the button 
     fn render_second_line(&mut self, ui: &mut Ui){
         ui.horizontal(|ui|{
                 //button 1
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[1][0])).clicked(){
-                if self.field[1][0] == " ".to_string(){
-                    if &self.round % 2 == 1 {
-                        self.field[1][0] = "O".to_string();
-                    }else{
-                        self.field[1][0] = "X".to_string();
+                if !self.finished{
+                    if self.field[1][0] == " ".to_string(){
+                        if &self.round % 2 == 1 {
+                            self.field[1][0] = "O".to_string();
+                        }else{
+                            self.field[1][0] = "X".to_string();
+                        }
+                        self.round += 1;
+                        self.check();
                     }
-                    self.round += 1;
-                    self.check();
                 }
             }
             //button 2
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[1][1])).clicked(){
-                if self.field[1][1] == " ".to_string(){
-                    if &self.round % 2 == 1 {
-                        self.field[1][1] = "O".to_string();
-                    }else{
-                        self.field[1][1] = "X".to_string();
+                if !self.finished{
+                    if self.field[1][1] == " ".to_string(){
+                        if &self.round % 2 == 1 {
+                            self.field[1][1] = "O".to_string();
+                        }else{
+                            self.field[1][1] = "X".to_string();
+                        }
+                        self.round += 1;
+                        self.check();
                     }
-                    self.round += 1;
-                    self.check();
-                } 
+                }
             }
             //button 3
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[1][2])).clicked(){
-                if self.field[1][2] == " ".to_string(){
-                    if &self.round % 2 == 1 {
-                        self.field[1][2] = "O".to_string();
-                    }else{
-                        self.field[1][2] = "X".to_string();
+                if !self.finished{
+                    if self.field[1][2] == " ".to_string(){
+                        if &self.round % 2 == 1 {
+                            self.field[1][2] = "O".to_string();
+                        }else{
+                            self.field[1][2] = "X".to_string();
+                        }
+                        self.round += 1;
+                        self.check();
                     }
-                    self.round += 1;
-                    self.check();
                 }
             }
         });
     }
 
+    ///A component function
+    /// 
+    /// The third line of the gamefield
+    /// 
+    /// 
     fn render_third_line(&mut self, ui: &mut Ui){
         ui.horizontal(|ui|{
                 //button 1
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[2][0])).clicked(){
-                if self.field[2][0] == " ".to_string(){
-                    if &self.round % 2 == 1 {
-                        self.field[2][0] = "O".to_string();
-                    }else{
-                        self.field[2][0] = "X".to_string();
+                if !self.finished{
+                    if self.field[2][0] == " ".to_string(){
+                        if &self.round % 2 == 1 {
+                            self.field[2][0] = "O".to_string();
+                        }else{
+                            self.field[2][0] = "X".to_string();
+                        }
+                        self.round += 1;
+                        self.check();
                     }
-                    self.round += 1;
-                    self.check();
                 }
             }
             //button 2
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[2][1])).clicked(){
-                if self.field[2][1] == " ".to_string(){
-                    if &self.round % 2 == 1 {
-                        self.field[2][1] = "O".to_string();
-                    }else{
-                        self.field[2][1] = "X".to_string();
+                if !self.finished{
+                    if self.field[2][1] == " ".to_string(){
+                        if &self.round % 2 == 1 {
+                            self.field[2][1] = "O".to_string();
+                        }else{
+                            self.field[2][1] = "X".to_string();
+                        }
+                        self.round += 1;
+                        self.check();
                     }
-                    self.round += 1;
-                    self.check();
                 }
             }
             //button 3
             if ui.add_sized((60., 60.), egui::Button::new(&self.field[2][2])).clicked(){
-                if self.field[2][2] == " ".to_string(){
-                    if &self.round % 2 == 1 {
-                        self.field[2][2] = "O".to_string();
-                    }else{
-                        self.field[2][2] = "X".to_string();
-                    }
-                    self.round += 1;
-                    self.check();
-                }
+                if !self.finished{
+                    if self.field[2][2] == " ".to_string(){
+                        if &self.round % 2 == 1 {
+                            self.field[2][2] = "O".to_string();
+                        }else{
+                            self.field[2][2] = "X".to_string();
+                        }
+                        self.round += 1;
+                        self.check();
+                    }    
+                }                
             }
         });
     }
 }
 
 //all field are used?
+///Checker function
+/// 
+/// loops over all fields and checks if the field isn't empty
+/// 
+/// counter is the number of fields that are not empty -> when all fields aren't empty it will stop the game
+/// 
+/// Fails when the game is null OR the field is null
 fn all_fields_full(game: &mut Game ){
     //counts the number of used fields
     let mut counter = 0;
@@ -236,6 +298,16 @@ fn all_fields_full(game: &mut Game ){
 }
 
 //checking functions
+///There are several ways to win the game
+/// 
+/// Here are functions if any of the two players won the game with any of the
+/// winning cases
+/// 
+/// These is the first function to check the possibility of winning on a diagonal
+/// 
+/// Fails when the symbol argument is null OR the game is null
+/// 
+/// Changes the symbols of the winning three combination to a more bolder version of the button contents
 fn diagonal(game: &mut Game, symbol: &str){
     //first possability
     //layout:
@@ -276,6 +348,13 @@ fn diagonal(game: &mut Game, symbol: &str){
     }
 }
 
+/// A checking function 
+/// 
+/// Looks over all vertical lines if a user won the game
+/// 
+/// Fails if one of the arguments are null
+/// 
+/// Replaces the current line with the special characters
 fn vertical(game: &mut Game, symbol: &str){
     //first case
     //layout:
@@ -335,6 +414,13 @@ fn vertical(game: &mut Game, symbol: &str){
     }
 }
 
+/// A checking function 
+/// 
+/// Makes sure that maybe somebody won on a horizontal
+/// 
+/// Fails if the arguments are null
+/// 
+/// Sets the winner property of true so that the checker knows that the game has ended successfully
 fn horizontal(game: &mut Game, symbol: &str){
     //first line
     //layout:
@@ -414,6 +500,7 @@ impl App for Game{
         });
         
         CentralPanel::default().show(ctx, |ui| {
+            ctx.set_visuals(egui::Visuals::light());
             //check if game is finished
             //buttons which contain game symbols
             //-> store game symbols in field property
