@@ -480,6 +480,9 @@ fn horizontal(game: &mut Game, symbol: &str){
     } 
 }
 
+///Instanciate the App trait from egui to game struct
+/// 
+/// Render the game with framework specific methods
 impl App for Game{
     fn save(&mut self, _storage: &mut dyn eframe::Storage) {}
 
